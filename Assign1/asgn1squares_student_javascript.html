@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>Leon Ho COMP 4560 - Assignment 1</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      border: 0;
+      overflow: hidden; /*  Disable scrollbars */
+      display: block;  /* No floating content on sides */
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id='c' style = 'position: absolute; left: 0px; top: 0px;' >
+  </canvas>
+
+  <script>
+    (function() {
+      var
+        // Obtain a reference to the canvas element
+        // using its id.
+        windowCanvas = document.getElementById('c'),
+
+          // Obtain a graphics context on the
+          // canvas element for drawing.
+          context = windowCanvas.getContext('2d');
+
+        // *** You may want to define some other variables here... ***
+        var s = 10;
+        var g = 5;
+        var bgColor1 = "#ffffff";
+        var bgColor2 = "#000000";
+
+      // Start listening to resize events and
+      // draw canvas.
+      initialize();
+
+      function initialize() {
+        // Register event listeners to
+        // call the resizeWindow() function each time the window is resized,
+        // and the toggle() function every time the user clicks on the window.
+        window.addEventListener('resize', resizeWindow, false);
+        window.addEventListener('click', toggle)
+        windowCanvas.width = window.innerWidth;
+        windowCanvas.height = window.innerHeight;
+        redraw();
+        // Draw background and squares for the first time.
+        // ie, call the appropriate function(s) here.
+      }
+
+
+      function redraw() {
+
+        // This function is called at initialization, and when the window is resized
+        // *** Your code for drawing the squares goes here ***
+        // Hints:
+        // 0. "context.fillStyle='[colour]'" assigns a colour to a shape (you can use either the HTML code or the colour name)
+        // 1. "context.fillRect(x, y, w, h)" creates a rectangle with top left corner at (x,y), width w, and height h.
+        // 2. The height of your window is window.innerHeight, and its width is window.innerWidth.
+        drawBackground();
+        context.fillStyle='Green';
+        var startX = (windowCanvas.width / 2) - s;
+        var startY = (2 * s) + g;
+        var endY = windowCanvas.height - ((2 * s) + g);
+        while (startX > (2 * s) + g) {
+          var tempY = startY;
+          while(tempY < endY) {
+            context.fillRect(startX, tempY, s, s);
+            tempY += g + s;
+          }
+          startX -= g + s;
+        }
+
+
+        startX = (windowCanvas.width / 2);
+        startY = (2 * s) + g;
+        var endX = windowCanvas.width - ((2 * s) + g);
+        endY = windowCanvas.height - ((2 * s) + g);
+        while (startX < endX) {
+          tempY = startY;
+          while(tempY < endY) {
+            context.fillRect(startX, tempY, s, s);
+            tempY += g + s;
+          }
+          startX += g + s;
+        }
+
+
+      }
+
+      function resizeWindow()
+      // Runs each time the window is resized.
+      // Resets the canvas dimensions to match window, then redraws the background and squares.
+      {
+        windowCanvas.width = window.innerWidth;
+        windowCanvas.height = window.innerHeight;
+        redraw();
+      }
+
+      function toggle() {
+        // This function is called when the user clicks on the window.
+        var temp = bgColor1;
+        bgColor1 = bgColor2;
+        bgColor2 = temp;
+        redraw();
+      }
+
+      function drawBackground() {
+        context.fillStyle = bgColor1;
+        context.fillRect(0, 0, windowCanvas.width / 2, windowCanvas.height);
+        context.fillStyle = bgColor2;
+        context.fillRect(windowCanvas.width / 2, 0, windowCanvas.width / 2, windowCanvas.height);
+      }
+
+    })();
+  </script>
+
+</body>
+
+</html>
