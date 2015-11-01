@@ -452,7 +452,7 @@ namespace asgn5v1
 				vertices[numpts,3] = 1.0d;
 				numpts++;						
 			}
-			
+            vertices = centerAndScale(vertices);
 		}// end of DecodeCoords
 
 		void DecodeLines(ArrayList linesdata)
@@ -497,9 +497,8 @@ namespace asgn5v1
                 {1, 1, 0, 1 }
 
             };
-            
+
             printMatrix(matrixMultiplier(vertices, temp));
-            
             if (e.Button == transleftbtn)
 			{
                 
@@ -578,7 +577,7 @@ namespace asgn5v1
         {
             double temp;
             double[,] answer = new double[mat1.GetLength(0), mat1.GetLength(1)];
-            for (int i = 0; i < numpts; i++)
+            for (int i = 0; i < mat1.GetLength(0); i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
@@ -601,6 +600,29 @@ namespace asgn5v1
                 }
                 Console.WriteLine();
             }
+        }
+
+        private double[,] centerAndScale(double [,] mat)
+        {
+            double x = this.ClientSize.Width / 2;
+            double y = this.ClientSize.Height / 2;
+            double[,] centeringMatrix = new double[4, 4]
+            {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0 },
+                {0, 0, 1, 0 },
+                {mat[0,0] * -1, mat[0,1] * -1, 0, 1 }
+            };
+            mat = matrixMultiplier(mat, centeringMatrix);
+            double[,] transMatrix = new double[4, 4]
+            {
+                {10, 0, 0, 0},
+                {0, -10, 0, 0 },
+                {0, 0, 10, 0 },
+                {x, y, 0, 1 }
+
+            };
+            return matrixMultiplier(mat, transMatrix);
         }
 		
 	}
