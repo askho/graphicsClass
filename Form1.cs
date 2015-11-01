@@ -625,6 +625,12 @@ namespace asgn5v1
 			}
 
 		}
+        /// <summary>
+        /// Multiples to matricies to gether.
+        /// </summary>
+        /// <param name="mat1">The left matrix to multiply</param>
+        /// <param name="mat2">The right matrix to multiply</param>
+        /// <returns>The resulting matrix</returns>
         private double[,] matrixMultiplier(double[,] mat1, double[,] mat2)
         {
             double temp;
@@ -641,7 +647,10 @@ namespace asgn5v1
             }
             return answer;
         }
-
+        /// <summary>
+        /// Debugging tool, prints out a matrix into the console. 
+        /// </summary>
+        /// <param name="mat"></param>
         private void printMatrix(double [,] mat)
         {
             for (int i = 0; i < mat.GetLength(0); i++)
@@ -653,7 +662,11 @@ namespace asgn5v1
                 Console.WriteLine();
             }
         }
-
+        /// <summary>
+        /// Takes the inital matrix and moves it to the center of the screen while scaling it up. 
+        /// </summary>
+        /// <param name="mat">The matrix to center</param>
+        /// <returns>A new matrix that has been centered and scaled up. </returns>
         private double[,] centerAndScale(double [,] mat)
         {
             double x = this.ClientSize.Width / 2;
@@ -670,7 +683,12 @@ namespace asgn5v1
             };
             return matrixMultiplier(mat, transMatrix);
         }
-		
+		/// <summary>
+        /// Gives a matrix that moves the center point of the shape to
+        /// the origin (top left hand corner of screen)
+        /// </summary>
+        /// <param name="mat">The shape in matrix form</param>
+        /// <returns>The transformation matrix to move it to the origin</returns>
         private double[,] originMatrix(double [,] mat)
         {
             return new double[,] {
@@ -680,6 +698,11 @@ namespace asgn5v1
                 {mat[0,0] * -1, mat[0,1] * -1, mat[0,2] * -1, 1 }
             };
         }
+        /// <summary>
+        /// Undos the origin matrix calculation. Requires that the matrix is a 4 by 4 matrix.
+        /// </summary>
+        /// <param name="mat">The orign matrix to undo</param>
+        /// <returns>The reversed origin matrix to move it back to its original spot. </returns>
         public double[,] undoOriginMatrix(double[,] mat)
         {
             return new double[,]
