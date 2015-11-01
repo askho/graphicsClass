@@ -350,7 +350,6 @@ namespace asgn5v1
                         scrnpts[i, j] = temp;
                     }
                 }
-
                 //now draw the lines
 
                 for (int i = 0; i < numlines; i++)
@@ -383,7 +382,8 @@ namespace asgn5v1
 
 		void RestoreInitialImage()
 		{
-			Invalidate();
+            setIdentity(ctrans, 4, 4);
+            Invalidate();
 		} // end of RestoreInitialImage
 
 		bool GetNewData()
@@ -488,42 +488,94 @@ namespace asgn5v1
 
 		private void toolBar1_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
 		{
-
-            double[,] temp = new double[4, 4]
-            {
-                {1, 0, 0, 0},
-                {0, 1, 0, 0 },
-                {0, 0, 1, 0 },
-                {1, 1, 0, 1 }
-
-            };
-
-            printMatrix(matrixMultiplier(vertices, temp));
+          
             if (e.Button == transleftbtn)
 			{
-                
+                double[,] temp = new double[4, 4]
+                {
+                    {1, 0, 0, 0},
+                    {0, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {-75, 0, 0, 1 }
+
+                };
+                ctrans = matrixMultiplier(ctrans, temp);
                 Refresh();
 			}
 			if (e.Button == transrightbtn) 
 			{
-				Refresh();
+                double[,] temp = new double[4, 4]
+                {
+                    {1, 0, 0, 0},
+                    {0, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {75, 0, 0, 1 }
+
+                };
+                ctrans = matrixMultiplier(ctrans, temp);
+                Refresh();
 			}
 			if (e.Button == transupbtn)
 			{
-				Refresh();
+                double[,] temp = new double[4, 4]
+                {
+                    {1, 0, 0, 0},
+                    {0, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {0, -35, 0, 1 }
+
+                };
+                ctrans = matrixMultiplier(ctrans, temp);
+                Refresh();
 			}
 			
 			if(e.Button == transdownbtn)
 			{
-				Refresh();
+                double[,] temp = new double[4, 4]
+                {
+                    {1, 0, 0, 0},
+                    {0, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {0, 35, 0, 1 }
+
+                };
+                ctrans = matrixMultiplier(ctrans, temp);
+                Refresh();
 			}
 			if (e.Button == scaleupbtn) 
 			{
-				Refresh();
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] scalingMatrix = new double[,] 
+                {
+                    {1.1, 0, 0, 0},
+                    {0, 1.1, 0, 0 },
+                    {0, 0, 1.1, 0 },
+                    {0, 0, 0, 1 }
+                };
+
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, scalingMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
 			}
 			if (e.Button == scaledownbtn) 
 			{
-				Refresh();
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] scalingMatrix = new double[,]
+                {
+                    {0.9, 0, 0, 0},
+                    {0, 0.9, 0, 0 },
+                    {0, 0, 0.9, 0 },
+                    {0, 0, 0, 1 }
+                };
+
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, scalingMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
+                Refresh();
 			}
 			if (e.Button == rotxby1btn) 
 			{
@@ -606,13 +658,7 @@ namespace asgn5v1
         {
             double x = this.ClientSize.Width / 2;
             double y = this.ClientSize.Height / 2;
-            double[,] centeringMatrix = new double[4, 4]
-            {
-                {1, 0, 0, 0},
-                {0, 1, 0, 0 },
-                {0, 0, 1, 0 },
-                {mat[0,0] * -1, mat[0,1] * -1, 0, 1 }
-            };
+            double[,] centeringMatrix = originMatrix(mat);
             mat = matrixMultiplier(mat, centeringMatrix);
             double[,] transMatrix = new double[4, 4]
             {
@@ -625,6 +671,25 @@ namespace asgn5v1
             return matrixMultiplier(mat, transMatrix);
         }
 		
+        private double[,] originMatrix(double [,] mat)
+        {
+            return new double[,] {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0 },
+                {0, 0, 1, 0 },
+                {mat[0,0] * -1, mat[0,1] * -1, mat[0,2] * -1, 1 }
+            };
+        }
+        public double[,] undoOriginMatrix(double[,] mat)
+        {
+            return new double[,]
+            {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0 },
+                {0, 0, 1, 0 },
+                {mat[3,0] * -1, mat[3,1] * -1, mat[3,2] * -1, 1 }
+            };
+        }
 	}
 
 	
