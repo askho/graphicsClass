@@ -453,6 +453,7 @@ namespace asgn5v1
 				numpts++;						
 			}
             vertices = centerAndScale(vertices);
+            printMatrix(vertices);
 		}// end of DecodeCoords
 
 		void DecodeLines(ArrayList linesdata)
@@ -671,12 +672,16 @@ namespace asgn5v1
         {
             double x = this.ClientSize.Width / 2;
             double y = this.ClientSize.Height / 2;
+            double matHeight = getHeight(mat);
+            double matWidth = getWidth(mat);
             double[,] centeringMatrix = originMatrix(mat);
             mat = matrixMultiplier(mat, centeringMatrix);
+            double scaleX = x / matWidth;
+            double scaleY = (y / matHeight);
             double[,] transMatrix = new double[4, 4]
             {
-                {10, 0, 0, 0},
-                {0, -10, 0, 0 },
+                {scaleY, 0, 0, 0},
+                {0, scaleY * -1, 0, 0 },
                 {0, 0, 10, 0 },
                 {x, y, 0, 1 }
 
@@ -713,7 +718,41 @@ namespace asgn5v1
                 {mat[3,0] * -1, mat[3,1] * -1, mat[3,2] * -1, 1 }
             };
         }
-	}
+        public double getHeight(double[,] mat)
+        {
+            double biggest, smallest;
+            biggest = smallest = mat[0, 0];
+            for(int i = 0; i < mat.GetLength(0); i++)
+            {
+                if(mat[i, 1] > biggest)
+                {
+                    biggest = mat[i, 1];
+                }
+                if(mat[i, 1] < smallest)
+                {
+                    smallest = mat[i, 1];
+                }
+            }
+            return biggest - smallest;
+        }
+        public double getWidth(double[,] mat)
+        {
+            double biggest, smallest;
+            biggest = smallest = mat[0, 0];
+            for (int i = 0; i < mat.GetLength(0); i++)
+            {
+                if (mat[i, 1] > biggest)
+                {
+                    biggest = mat[i, 0];
+                }
+                if (mat[i, 1] < smallest)
+                {
+                    smallest = mat[i, 0];
+                }
+            }
+            return biggest - smallest;
+        }
+    }
 
 	
 }
