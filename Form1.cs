@@ -576,20 +576,58 @@ namespace asgn5v1
                 moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
                 ctrans = matrixMultiplier(ctrans, moveToOrigin);
                 Refresh();
-                Refresh();
 			}
 			if (e.Button == rotxby1btn) 
 			{
-				
-			}
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] rotationMatrix = new double[,]
+                {
+                    {1, 0, 0, 0},
+                    {0, Math.Cos(0.5),  Math.Sin(0.5), 0 },
+                    {0, Math.Sin(0.5) * -1, Math.Cos(0.5), 0 },
+                    {0, 0, 0, 1 }
+                };
+
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
+            }
 			if (e.Button == rotyby1btn) 
 			{
-				
-			}
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] rotationMatrix = new double[,]
+                {
+                    {Math.Cos(0.5), 0, Math.Sin(0.5) * -1, 0},
+                    {0, 1,  0, 0 },
+                    {Math.Sin(0.5), 0, Math.Cos(0.5), 0 },
+                    {0, 0, 0, 1 }
+                };
+
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
+            }
 			if (e.Button == rotzby1btn) 
 			{
-				
-			}
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] rotationMatrix = new double[,]
+                {
+                    {Math.Cos(0.5), Math.Sin(0.5), 0, 0},
+                    {Math.Sin(0.5) * -1, Math.Cos(0.5), 0, 0 },
+                    {0, 0, 1, 0 },
+                    {0, 0, 0, 1 }
+                };
+
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
+            }
 
 			if (e.Button == rotxbtn) 
 			{
