@@ -307,7 +307,7 @@ namespace asgn5v1
             // 
             // Transformer
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(508, 306);
             this.Controls.Add(this.toolBar1);
             this.Name = "Transformer";
@@ -583,8 +583,8 @@ namespace asgn5v1
                 double[,] rotationMatrix = new double[,]
                 {
                     {1, 0, 0, 0},
-                    {0, Math.Cos(0.5),  Math.Sin(0.5), 0 },
-                    {0, Math.Sin(0.5) * -1, Math.Cos(0.5), 0 },
+                    {0, Math.Cos(0.05),  Math.Sin(0.05), 0 },
+                    {0, Math.Sin(0.05) * -1, Math.Cos(0.05), 0 },
                     {0, 0, 0, 1 }
                 };
 
@@ -599,9 +599,9 @@ namespace asgn5v1
                 double[,] moveToOrigin = originMatrix(scrnpts);
                 double[,] rotationMatrix = new double[,]
                 {
-                    {Math.Cos(0.5), 0, Math.Sin(0.5) * -1, 0},
+                    {Math.Cos(0.05), 0, Math.Sin(0.05) * -1, 0},
                     {0, 1,  0, 0 },
-                    {Math.Sin(0.5), 0, Math.Cos(0.5), 0 },
+                    {Math.Sin(0.05), 0, Math.Cos(0.05), 0 },
                     {0, 0, 0, 1 }
                 };
 
@@ -616,8 +616,8 @@ namespace asgn5v1
                 double[,] moveToOrigin = originMatrix(scrnpts);
                 double[,] rotationMatrix = new double[,]
                 {
-                    {Math.Cos(0.5), Math.Sin(0.5), 0, 0},
-                    {Math.Sin(0.5) * -1, Math.Cos(0.5), 0, 0 },
+                    {Math.Cos(0.05), Math.Sin(0.05), 0, 0},
+                    {Math.Sin(0.05) * -1, Math.Cos(0.05), 0, 0 },
                     {0, 0, 1, 0 },
                     {0, 0, 0, 1 }
                 };
@@ -720,7 +720,7 @@ namespace asgn5v1
             {
                 {scaleY, 0, 0, 0},
                 {0, scaleY * -1, 0, 0 },
-                {0, 0, 10, 0 },
+                {0, 0, scaleY, 0 },
                 {x, y, 0, 1 }
 
             };
