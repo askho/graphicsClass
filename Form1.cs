@@ -48,7 +48,8 @@ namespace asgn5v1
 		private System.Windows.Forms.ToolBarButton toolBarButton5;
 		private System.Windows.Forms.ToolBarButton resetbtn;
 		private System.Windows.Forms.ToolBarButton exitbtn;
-		int[,] lines;
+        private Timer timer = new Timer();
+        int[,] lines;
 
 		public Transformer()
 		{
@@ -488,8 +489,7 @@ namespace asgn5v1
 		}
 
 		private void toolBar1_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
-		{
-          
+		{   
             if (e.Button == transleftbtn)
 			{
                 double[,] temp = new double[4, 4]
@@ -631,17 +631,83 @@ namespace asgn5v1
 
 			if (e.Button == rotxbtn) 
 			{
-				
+                if(timer.Enabled == true)
+                {
+                    timer.Dispose();
+                    return;
+                }
+                timer.Interval = 10;
+                timer.Tick += (send, evt) =>
+                {
+                    double[,] moveToOrigin = originMatrix(scrnpts);
+                    double[,] rotationMatrix = new double[,]
+                    {
+                    {1, 0, 0, 0},
+                    {0, Math.Cos(0.05),  Math.Sin(0.05), 0 },
+                    {0, Math.Sin(0.05) * -1, Math.Cos(0.05), 0 },
+                    {0, 0, 0, 1 }
+                    };
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                    moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    Refresh();
+                };
+                timer.Start();
 			}
 			if (e.Button == rotybtn) 
 			{
-				
-			}
+                if (timer.Enabled == true)
+                {
+                    timer.Dispose();
+                    return;
+                }
+                timer.Interval = 10;
+                timer.Tick += (send, evt) =>
+                {
+                    double[,] moveToOrigin = originMatrix(scrnpts);
+                    double[,] rotationMatrix = new double[,]
+                    {
+                    {Math.Cos(0.05), 0, Math.Sin(0.05) * -1, 0},
+                    {0, 1,  0, 0 },
+                    {Math.Sin(0.05), 0, Math.Cos(0.05), 0 },
+                    {0, 0, 0, 1 }
+                    };
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                    moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    Refresh();
+                };
+                timer.Start();
+            }
 			
 			if (e.Button == rotzbtn) 
 			{
-				
-			}
+                if (timer.Enabled == true)
+                {
+                    timer.Dispose();
+                    return;
+                }
+                timer.Interval = 10;
+                timer.Tick += (send, evt) =>
+                {
+                    double[,] moveToOrigin = originMatrix(scrnpts);
+                    double[,] rotationMatrix = new double[,]
+                    {
+                        {Math.Cos(0.05), Math.Sin(0.05), 0, 0},
+                        {Math.Sin(0.05) * -1, Math.Cos(0.05), 0, 0 },
+                        {0, 0, 1, 0 },
+                        {0, 0, 0, 1 }
+                    };
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    ctrans = matrixMultiplier(ctrans, rotationMatrix);
+                    moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                    ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                    Refresh();
+                };
+                timer.Start();
+            }
 
 			if(e.Button == shearleftbtn)
 			{
