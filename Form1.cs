@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Data;
 using System.IO;
 using System.Text;
+using System.Reflection;
 
 namespace asgn5v1
 {
@@ -21,7 +22,8 @@ namespace asgn5v1
 
 		int numpts = 0;
 		int numlines = 0;
-		bool gooddata = false;		
+		bool gooddata = false;
+        private double transCache;		
 		double[,] vertices;
 		double[,] scrnpts;
 		double[,] ctrans = new double[4,4];  //your main transformation matrix
@@ -440,7 +442,7 @@ namespace asgn5v1
 		void DecodeCoords(ArrayList coorddata)
 		{
 			//this may allocate slightly more rows that necessary
-			vertices = new double[coorddata.Count,4];
+			vertices = new double[coorddata.Count, 4];
 			numpts = 0;
 			string [] text = null;
 			for (int i = 0; i < coorddata.Count; i++)
@@ -453,8 +455,8 @@ namespace asgn5v1
 				vertices[numpts,3] = 1.0d;
 				numpts++;						
 			}
+            
             vertices = centerAndScale(vertices);
-            printMatrix(vertices);
 		}// end of DecodeCoords
 
 		void DecodeLines(ArrayList linesdata)
@@ -473,6 +475,7 @@ namespace asgn5v1
 			}
 		} // end of DecodeLines
 
+
 		void setIdentity(double[,] A,int nrow,int ncol)
 		{
 			for (int i = 0; i < nrow;i++) 
@@ -487,9 +490,9 @@ namespace asgn5v1
 		{
 			
 		}
-
-		private void toolBar1_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
-		{   
+        private void toolBar1_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
+		{
+            timer.Dispose();
             if (e.Button == transleftbtn)
 			{
                 double[,] temp = new double[4, 4]
@@ -553,10 +556,10 @@ namespace asgn5v1
                     {0, 0, 1.1, 0 },
                     {0, 0, 0, 1 }
                 };
-
                 ctrans = matrixMultiplier(ctrans, moveToOrigin);
                 ctrans = matrixMultiplier(ctrans, scalingMatrix);
                 moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                transCache *= 1.1;
                 ctrans = matrixMultiplier(ctrans, moveToOrigin);
                 Refresh();
 			}
@@ -570,11 +573,11 @@ namespace asgn5v1
                     {0, 0, 0.9, 0 },
                     {0, 0, 0, 1 }
                 };
-
                 ctrans = matrixMultiplier(ctrans, moveToOrigin);
                 ctrans = matrixMultiplier(ctrans, scalingMatrix);
                 moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
                 ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                transCache *= 0.9;
                 Refresh();
 			}
 			if (e.Button == rotxby1btn) 
@@ -631,11 +634,7 @@ namespace asgn5v1
 
 			if (e.Button == rotxbtn) 
 			{
-                if(timer.Enabled == true)
-                {
-                    timer.Dispose();
-                    return;
-                }
+                timer = new Timer();
                 timer.Interval = 10;
                 timer.Tick += (send, evt) =>
                 {
@@ -657,11 +656,7 @@ namespace asgn5v1
 			}
 			if (e.Button == rotybtn) 
 			{
-                if (timer.Enabled == true)
-                {
-                    timer.Dispose();
-                    return;
-                }
+                timer = new Timer();
                 timer.Interval = 10;
                 timer.Tick += (send, evt) =>
                 {
@@ -684,11 +679,7 @@ namespace asgn5v1
 			
 			if (e.Button == rotzbtn) 
 			{
-                if (timer.Enabled == true)
-                {
-                    timer.Dispose();
-                    return;
-                }
+                timer = new Timer();
                 timer.Interval = 10;
                 timer.Tick += (send, evt) =>
                 {
@@ -711,13 +702,57 @@ namespace asgn5v1
 
 			if(e.Button == shearleftbtn)
 			{
-				Refresh();
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] shearingMatrix = new double[,]
+                {
+                    {1, 0, 0, 0 },
+                    {0.1, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {0, 0, 0, 1 }
+                };
+                double[,] zeroingMatrix = new double[,]
+                {
+                    {1, 0, 0, 0 },
+                    {0, 1, 0, 0 },
+                    {0, 0, 1 ,0 },
+                    {0, transCache * -1, 0, 1 }
+                };
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, zeroingMatrix);
+                ctrans = matrixMultiplier(ctrans, shearingMatrix);
+                zeroingMatrix[3, 1] *= -1;
+                ctrans = matrixMultiplier(ctrans, zeroingMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
 			}
 
 			if (e.Button == shearrightbtn) 
 			{
-				Refresh();
-			}
+                double[,] moveToOrigin = originMatrix(scrnpts);
+                double[,] shearingMatrix = new double[,]
+                {
+                    {1, 0, 0, 0 },
+                    {-0.1, 1, 0, 0 },
+                    {0, 0, 1, 0 },
+                    {0, 0, 0, 1 }
+                };
+                double[,] zeroingMatrix = new double[,]
+                {
+                    {1, 0, 0, 0 },
+                    {0, 1, 0, 0 },
+                    {0, 0, 1 ,0 },
+                    {0, transCache * -1, 0, 1 }
+                };
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                ctrans = matrixMultiplier(ctrans, zeroingMatrix);
+                ctrans = matrixMultiplier(ctrans, shearingMatrix);
+                zeroingMatrix[3, 1] *= -1;
+                ctrans = matrixMultiplier(ctrans, zeroingMatrix);
+                moveToOrigin = undoOriginMatrix(moveToOrigin);//Move the matrix back to its inital spot
+                ctrans = matrixMultiplier(ctrans, moveToOrigin);
+                Refresh();
+            }
 
 			if (e.Button == resetbtn)
 			{
@@ -778,6 +813,7 @@ namespace asgn5v1
             double y = this.ClientSize.Height / 2;
             double matHeight = getHeight(mat);
             double matWidth = getWidth(mat);
+            transCache = mat[0, 0];
             double[,] centeringMatrix = originMatrix(mat);
             mat = matrixMultiplier(mat, centeringMatrix);
             double scaleX = x / matWidth;
@@ -790,6 +826,7 @@ namespace asgn5v1
                 {x, y, 0, 1 }
 
             };
+            transCache *= scaleY;
             return matrixMultiplier(mat, transMatrix);
         }
 		/// <summary>
@@ -855,6 +892,30 @@ namespace asgn5v1
                 }
             }
             return biggest - smallest;
+        }
+        public double[,] getShearOrigin(double[,] mat)
+        {
+            double[,] origin = originMatrix(mat);
+            double height = getHeight(mat);
+            double[,] translationMatrix = new double[,] {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0 },
+                {0, 0, 1, 0 },
+                {0, transCache, 0, 1}
+            };
+            return matrixMultiplier(origin, translationMatrix);
+            
+        }
+        public double[,] undoGetShearOrigin(double[,] mat)
+        {
+            double[,] origin = undoOriginMatrix(mat);
+            double[,] translationMatrix = new double[,] {
+                {1, 0, 0, 0},
+                {0, 1, 0, 0 },
+                {0, 0, 1, 0 },
+                {0, transCache, 0, 1}
+            };
+            return matrixMultiplier(translationMatrix, origin);
         }
     }
 
